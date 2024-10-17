@@ -1,0 +1,12 @@
+services:
+  app:
+    container_name: jenkins_app
+    build:
+      context: .
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+    environment:
+      JAVA_OPTS: "-Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self'; img-src *\""
