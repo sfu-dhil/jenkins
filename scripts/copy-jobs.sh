@@ -2,4 +2,4 @@
 
 #!/bin/bash
 
-rsync -rmv --include='*/' --include="config.xml" --exclude="*" jenkins-data/jobs .
+rsync -rmv --include='*/' --include="config.xml" --exclude="*" jenkins_home/jobs .

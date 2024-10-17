@@ -29,6 +29,7 @@ RUN apt-get update && apt-get -y --no-install-recommends --no-install-suggests i
     libsaxon-java \ 
     libsaxonhe-java \
     libxml2-utils \ 
+    libvips-tools \
     tidy \
     make \
     lsb-release \

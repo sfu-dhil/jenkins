@@ -20,7 +20,13 @@ tar xfz jobs.tar.gz
 
 And then go to "Manage Jenkins" -> Tools and Actions -> Reload Configuration from Disk
 
-And then the jobs should all be back in action. Permissions and tokens will need to be reset at the first instance (only on particular jobs)
+And then the jobs should all be back in action. Permissions and tokens will need to be reset at the first instance (only on particular jobs).
+
+As jobs are updated, copy the config:
+
+```
+sh ./scripts/copy-jobs.sh
+```
 
 
 ### Oct 16, 2024
