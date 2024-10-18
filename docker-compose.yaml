@@ -9,4 +9,4 @@ services:
     volumes:
       - ./jenkins_home:/var/jenkins_home
     environment:
-      JAVA_OPTS: "-Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self'; img-src *; style-src 'self' 'unsafe-inline' data:\""
+      JAVA_OPTS: "-Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self'; img-src * data:; style-src 'self' 'unsafe-inline' data:\""

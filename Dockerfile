@@ -5,6 +5,10 @@
 
 FROM jenkins/jenkins:lts
 ARG NODE_MAJOR=22
+ARG SAXON_MAJOR=12
+ARG SAXON_MINOR=4
+ARG SAXON_VERSION=SaxonHE${SAXON_MAJOR}-${SAXON_MINOR}
+ARG SAXON_URL=https://github.com/Saxonica/Saxon-HE/releases/download/${SAXON_VERSION}/${SAXON_VERSION}J.zip
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
@@ -43,19 +47,25 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
   $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 RUN apt-get update && apt-get install -y docker-ce-cli
 
-# Install sass, since it's used in a lot of places
-RUN npm install sass -g
-
-# Create a `saxon` exec  
-RUN echo "#! /bin/bash" > /usr/local/bin/saxon \
-    && echo "java -jar /usr/share/java/Saxon-HE.jar \$*" >> /usr/local/bin/saxon \
+RUN curl -fsSL  ${SAXON_URL} -o /tmp/saxon.zip \
+    && unzip /tmp/saxon.zip -d /usr/local/share/${SAXON_VERSION} \
+    # && find /usr/local/share/${SAXON_VERSION} -type f -name "*.jar" -exec chmod 755 {} \\; \
+    && echo "#! /bin/bash" > /usr/local/bin/saxon \
+    && echo "java -jar /usr/local/share/${SAXON_VERSION}/saxon-he-${SAXON_MAJOR}.${SAXON_MINOR}.jar \$*" >> /usr/local/bin/saxon \
     && chmod 755 /usr/local/bin/saxon
+
+# Install sass (and any other globally necessary NPM modules)
+# Yarn is currently (2024-10-18) necessary for Wilde, but hopefully not for long
+RUN npm install --global \
+    sass \
+    yarn 
 
 USER jenkins:jenkins
 WORKDIR ${JENKINS_HOME}
 RUN jenkins-plugin-cli --plugins \
         antisamy-markup-formatter \
         cloudbees-folder \
+        copyartifact \
         build-timeout \
         credentials-binding \
         timestamper \
@@ -70,10 +80,6 @@ RUN jenkins-plugin-cli --plugins \
         mailer \
         dark-theme
 
-
-
 # Now copy and tar
-
 COPY jobs /tmp/jobs
-
 RUN tar cfz /usr/share/jenkins/ref/jobs.tar.gz -C /tmp/ jobs
