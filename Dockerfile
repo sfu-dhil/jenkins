@@ -22,6 +22,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && apt-get install nodejs -y && apt-get clean && rm -rf /var/lib/apt/lists/* 
 
+RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
+  https://download.docker.com/linux/debian/gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) \
+  signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
+  https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+RUN apt-get update && apt-get install -y docker-ce-cli
+
 RUN apt-get update && apt-get -y --no-install-recommends --no-install-suggests install \
     ant \
     ant-optional \
@@ -39,17 +47,8 @@ RUN apt-get update && apt-get -y --no-install-recommends --no-install-suggests i
     lsb-release \
     zip 
     
-RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
-  https://download.docker.com/linux/debian/gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) \
-  signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
-  https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-RUN apt-get update && apt-get install -y docker-ce-cli
-
 RUN curl -fsSL  ${SAXON_URL} -o /tmp/saxon.zip \
     && unzip /tmp/saxon.zip -d /usr/local/share/${SAXON_VERSION} \
-    # && find /usr/local/share/${SAXON_VERSION} -type f -name "*.jar" -exec chmod 755 {} \\; \
     && echo "#! /bin/bash" > /usr/local/bin/saxon \
     && echo "java -jar /usr/local/share/${SAXON_VERSION}/saxon-he-${SAXON_MAJOR}.${SAXON_MINOR}.jar \$*" >> /usr/local/bin/saxon \
     && chmod 755 /usr/local/bin/saxon
