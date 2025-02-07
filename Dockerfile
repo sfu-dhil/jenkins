@@ -30,35 +30,35 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
   $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 RUN apt-get update && apt-get install -y docker-ce-cli
 
-RUN apt-get update && apt-get -y --no-install-recommends --no-install-suggests install \
-    ant \
-    ant-optional \
-    ant-contrib \
-    debhelper \
-    jing \
-    imagemagick \
-    libjing-java \ 
-    libsaxon-java \ 
-    libsaxonhe-java \
-    libxml2-utils \ 
-    libvips-tools \
-    pandoc \
-    tidy \
-    make \
-    lsb-release \
-    zip 
+# RUN apt-get update && apt-get -y --no-install-recommends --no-install-suggests install \
+#     ant \
+#     ant-optional \
+#     ant-contrib \
+#     debhelper \
+#     jing \
+#     imagemagick \
+#     libjing-java \ 
+#     libsaxon-java \ 
+#     libsaxonhe-java \
+#     libxml2-utils \ 
+#     libvips-tools \
+#     pandoc \
+#     tidy \
+#     make \
+#     lsb-release \
+#     zip 
     
-RUN curl -fsSL  ${SAXON_URL} -o /tmp/saxon.zip \
-    && unzip /tmp/saxon.zip -d /usr/local/share/${SAXON_VERSION} \
-    && echo "#! /bin/bash" > /usr/local/bin/saxon \
-    && echo "java -jar /usr/local/share/${SAXON_VERSION}/saxon-he-${SAXON_MAJOR}.${SAXON_MINOR}.jar \$*" >> /usr/local/bin/saxon \
-    && chmod 755 /usr/local/bin/saxon
+# RUN curl -fsSL  ${SAXON_URL} -o /tmp/saxon.zip \
+#     && unzip /tmp/saxon.zip -d /usr/local/share/${SAXON_VERSION} \
+#     && echo "#! /bin/bash" > /usr/local/bin/saxon \
+#     && echo "java -jar /usr/local/share/${SAXON_VERSION}/saxon-he-${SAXON_MAJOR}.${SAXON_MINOR}.jar \$*" >> /usr/local/bin/saxon \
+#     && chmod 755 /usr/local/bin/saxon
 
-# Install sass (and any other globally necessary NPM modules)
-# Yarn is currently (2024-10-18) necessary for Wilde, but hopefully not for long
-RUN npm install --global \
-    sass \
-    yarn 
+# # Install sass (and any other globally necessary NPM modules)
+# # Yarn is currently (2024-10-18) necessary for Wilde, but hopefully not for long
+# RUN npm install --global \
+#     sass \
+#     yarn 
 
 USER jenkins:jenkins
 WORKDIR ${JENKINS_HOME}
@@ -66,6 +66,8 @@ RUN jenkins-plugin-cli --plugins \
         antisamy-markup-formatter \
         cloudbees-folder \
         copyartifact \
+        docker-plugin \
+        docker-workflow \
         build-timeout \
         credentials-binding \
         timestamper \
@@ -81,5 +83,5 @@ RUN jenkins-plugin-cli --plugins \
         dark-theme
 
 # Now copy and tar
-COPY jobs /tmp/jobs
-RUN tar cfz /usr/share/jenkins/ref/jobs.tar.gz -C /tmp/ jobs
+# COPY jobs /tmp/jobs
+# RUN tar cfz /usr/share/jenkins/ref/jobs.tar.gz -C /tmp/ jobs
