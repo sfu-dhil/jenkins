@@ -8,20 +8,17 @@ services:
       - 50000:50000
     volumes:
       - .data/jenkins_home:/var/jenkins_home
-      - .data/docker-certs-client:/certs/client:ro
     environment:
       JAVA_OPTS: "-Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self'; style-src-elem *; font-src *; img-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-hashes'; style-src 'self' 'unsafe-inline' data:\""
-      DOCKER_HOST: 'tcp://docker:2376'
-      DOCKER_CERT_PATH: /certs/client
-      DOCKER_TLS_VERIFY: 1
-  docker:
-    container_name: jenkins_dind
-    image: docker:dind
-    privileged: true
-    restart: always
+      DOCKER_HOST: socat:2375
+    depends_on:
+      - socat
+
+  # fixes /var/run/docker.sock binding in mac (docker desktop always sets socket to root:root so jenkins user cannot run it directly even with docker group)
+  socat:
+    container_name: jenkins_socat
+    image: alpine/socat
+    command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+    user: root
     volumes:
-      - .data/jenkins_home:/var/jenkins_home
-      - .data/docker-certs-ca:/certs/ca
-      - .data/docker-certs-client:/certs/client
-    environment:
-      DOCKER_TLS_CERTDIR: /certs
+      - /var/run/docker.sock.raw:/var/run/docker.sock
