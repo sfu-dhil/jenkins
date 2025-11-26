@@ -1,6 +1,7 @@
 services:
   app:
     container_name: jenkins_app
+    # image: ghcr.io/sfu-dhil/jenkins
     build:
       context: .
     ports:

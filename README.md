@@ -1,3 +1,7 @@
+[![Docker Image Latest Badge](https://ghcr-badge.egpl.dev/sfu-dhil/jenkins/latest_tag?trim=major&label=latest)](https://github.com/sfu-dhil/jenkins/pkgs/container/jenkins)
+[![Docker Image Size badge](https://ghcr-badge.egpl.dev/sfu-dhil/jenkins/size)](https://github.com/sfu-dhil/jenkins/pkgs/container/jenkins)
+
+
 # Jenkins Configuration for the DHIL
 
 ## Building (first time)
