@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.541.3-lts-jdk25
+FROM jenkins/jenkins:2.555.2-lts-jdk25
 
 # setup docker cli
 USER root
